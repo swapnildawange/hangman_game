@@ -9,7 +9,7 @@ import Keyboard from "./Keyboard";
 import Letter from "./Letter";
 import Man from "./Man";
 export default function GuessWord() {
-    const { width, height } = useWindowSize();
+  const { width, height } = useWindowSize();
 
   const [word, setWord] = useState("");
   const queryClient = useQueryClient();
@@ -37,7 +37,8 @@ export default function GuessWord() {
   const [attemptNumber, setAttemptNumber] = useState(1);
   const [hintNumber, setHintNumber] = useState(0);
   const [letters, setLetters] = useState([]);
-  const [isPlayerWon,setPlayerWon] = useState(false)
+  const [isPlayerWon, setPlayerWon] = useState(false);
+  const [isPlayerLost,setPlayerLost] = useState(false)
   const [userInput, setUserInput] = useState("");
   const [showHint, setShowHint] = useState(false);
   const generateLetters = (word) => {
@@ -53,10 +54,11 @@ export default function GuessWord() {
     setLetters(array);
   };
 
-  const checkPlayerWon= ()=>{
-   let a= letters.every(({letter,isVisible})=> isVisible)
-   console.log("a",a)
-  }
+  const checkPlayerWon = () => {
+    let status = letters.every(({ letter, isVisible }) =>{return isVisible;});
+    if(letters.length ===0 || isPlayerLost) status=false
+setPlayerWon(status)
+  };
 
   const checkLetter = (letter) => {
     if (validateUserInputLetter(letter)) {
@@ -77,6 +79,7 @@ export default function GuessWord() {
           });
         }
       });
+      console.log("isLetterPresent", isLetterPresent);
       if (!isLetterPresent) {
         setAttemptNumber((attemptNumber) => attemptNumber + 1);
       }
@@ -135,6 +138,12 @@ export default function GuessWord() {
 
   const handleRestart = () => {
     refetch();
+    setAttemptNumber(1);
+    setHintNumber(0);
+    setLetters([]);
+    setPlayerWon(false);
+    setUserInput("");
+    setPlayerLost(false);
   };
 
   // if lost show the word
@@ -146,39 +155,57 @@ export default function GuessWord() {
     }));
     setLetters(updatedLetters);
     // restart the game
-    setTimeout(handleRestart,1000)
+    setTimeout(handleRestart, 10000);
   };
 
-
-
-  useEffect(()=>{
-    if(attemptNumber > 5){
-      handleLost()
+  useEffect(() => {
+    if (attemptNumber > 5) {
+      handleLost();
+      setPlayerLost(true)
     }
-  },[attemptNumber])
-useEffect(()=>{
-  checkPlayerWon()
-},[setHintNumber,hintNumber,attemptNumber,setAttemptNumber])
+  }, [attemptNumber]);
+
+
+  useEffect(() => {
+    checkPlayerWon();
+    console.log("isPlayerWon",isPlayerWon)
+    if(isPlayerWon === true){
+      setAttemptNumber(1)
+    }
+  }, [
+    setHintNumber,
+    hintNumber,
+    attemptNumber,
+    setAttemptNumber,
+    checkLetter,
+    setUserInput,
+  ]);
 
   useEffect(() => {
     generateLetters(word);
   }, [word]);
+
+  console.log("word", word,isPlayerWon);
   return (
     <div>
       {/* show confetti when player guess the word correctly */}
-      <Confetti width={width} height={height} />
-
-    {/* <Warning/> */}
+      {isPlayerWon && <Confetti width={width} height={height} />}
+      {/* <Warning/> */}
       <div className="con">
-        <Man attemptNumber={attemptNumber} />
-        <div style={{ display: "flex" }}>
-          {letters.map((letter, index) => (
-            <Letter
-              key={letter.id}
-              {...letter}
-              handelLetterClick={handelLetterClick}
-            />
-          ))}
+        <div className="flex flex-col justify-items-center items-center">
+          <Man attemptNumber={attemptNumber} />
+          <div
+            className={`${isPlayerLost && "drop"}`}
+            style={{ display: "flex" }}
+          >
+            {letters.map((letter, index) => (
+              <Letter
+                key={letter.id}
+                {...letter}
+                handelLetterClick={handelLetterClick}
+              />
+            ))}
+          </div>
         </div>
         <div>
           <Keyboard
