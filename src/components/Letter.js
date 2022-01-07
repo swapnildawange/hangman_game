@@ -8,11 +8,12 @@ export default function Letter({
   isVisible,
   isSelected = false,
   handelLetterClick,
+  id
 }) {
-console.log("letter,isSelected",letter,isSelected)
+
 
   return (
-    <button onClick={() => handelLetterClick({ letter, isVisible })}>
+    <button onClick={() => handelLetterClick({ letter, isVisible,id })}>
       <div
         className={`w-20 m-2 h-20 grid place-items-center border  relative
 rounded-lg hover:border-8

@@ -1,0 +1,1 @@
+export const MAX_HINTS = 3;

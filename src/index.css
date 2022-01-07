@@ -37,11 +37,10 @@ code {
   box-shadow: 15px 15px 30px rgba(255, 255, 255,0.3), -10px -10px 10px rgba(255, 255, 255,0.1);
 }
 .selected__glass{
-  border:1px solid red
+  border:3px solid rgba(0, 0, 0,0.6 );
 }
 .con{
   width:100vw;
-  border:1px solid red;
   display: grid;
   grid-auto-flow: column;
   place-items: center;
