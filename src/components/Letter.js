@@ -12,7 +12,7 @@ export default function Letter({
   return (
     <button onClick={() => handelLetterClick({ letter, isVisible, id })}>
       <div
-        className={` w-10 h-10 md:w-16 m-2 md:h-16  grid place-items-center border  relative
+        className={` w-10 h-10 md:w-14 m-2 md:h-14  grid place-items-center border  relative
 rounded-lg hover:border-2
  hover:border-gray-400 active:border-gray-400 focus:outline-none focus:ring focus:ring-gray-400
       ${isVisible ? "cursor-not-allowed" : "glass"} ${

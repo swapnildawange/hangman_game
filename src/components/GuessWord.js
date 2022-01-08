@@ -156,8 +156,6 @@ export default function GuessWord() {
       isVisible: true,
     }));
     setLetters(updatedLetters);
-    // restart the game
-    setTimeout(handleRestart, 10000);
   };
 
   useEffect(() => {
