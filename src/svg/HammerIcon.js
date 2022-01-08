@@ -169,7 +169,7 @@ export const HammerHeadIcon = () => {
   return (
     <div >
       <svg
-        className="w-10 h-10 sm:w-20 sm:h-20 "
+        className="w-10 h-10 sm:w-16 sm:h-16 "
         viewBox="0 0 100 112"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
