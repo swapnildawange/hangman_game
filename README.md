@@ -5,7 +5,7 @@ If you are stuck use hint to select block to reveal letter
 
 
 # Click on this link to play the game
-[link](https://hangmangame-cash.vercel.app/)
+[https://hangman-game-gamma-sable.vercel.app/](https://hangman-game-gamma-sable.vercel.app/)
 
 # demo video
 
