@@ -8,4 +8,4 @@ If you are stuck use hint to select block to reveal letter
 [link](https://hangmangame-cash.vercel.app/)
 
 # demo video
- /home/swapnil/Desktop/Traning/hangman_game/hangman/demo.webm
+![demo](/home/swapnil/Desktop/Traning/hangman_game/hangman/demo.webm)
