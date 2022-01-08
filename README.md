@@ -1,3 +1,8 @@
-can use animated gif's for starting the game
-1. allow user to select which letter he want to view as hint
-2. show a little story why we are hanging him
+# Hangman Game
+
+# How to play ?
+## Guess the word to win the game
+
+# What is hint ?
+
+## If you are stuck use hint to select block to reveal letter

@@ -1,6 +1,5 @@
-import { motion } from "framer-motion";
 import propTypes from "prop-types";
-import React, { useState } from "react";
+import React from "react";
 
 export default function Letter({
   letter,
@@ -8,10 +7,8 @@ export default function Letter({
   isVisible,
   isSelected = false,
   handelLetterClick,
-  id
+  id,
 }) {
-
-
   return (
     <button onClick={() => handelLetterClick({ letter, isVisible, id })}>
       <div
@@ -32,5 +29,5 @@ Letter.propTypes = {
   letter: propTypes.string.isRequired,
   blank: propTypes.string,
   isVisible: propTypes.bool.isRequired,
-  isSelected:propTypes.bool,
+  isSelected: propTypes.bool,
 };
