@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
-import { HammerHeadIcon, HammerIcon } from '../svg/HammerIcon';
+import React, { useState } from "react";
+import { HammerHeadIcon } from "../svg/HammerIcon";
+import getMaxHints from "../utils/getMaxHints";
+import Popper from "./Popper";
 
-const ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
+const ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 function Keyboard({
   userInput,
@@ -11,42 +13,72 @@ function Keyboard({
   setShowHint,
   hintNumber,
   handleRestart,
+  word,
+  isLoading,
 }) {
   const setLetter = (e) => {
     let letter = e.toLocaleLowerCase();
     setUserInput(letter);
     checkLetter(letter);
   };
+  const [openHintPopper, setOpenHintPopper] = useState(showHint);
+  const [isShown, setIsShown] = useState(false);
+  const onClose = () => {
+    setOpenHintPopper(false);
+  };
 
-  let isHintDisabled = hintNumber >= 3;
+  let isHintDisabled = hintNumber >= getMaxHints(word);
+
   return (
-    <div className="border-slate-900 w-full h-full max-w-lg">
-      <div className="flex flex-wrap justify-center ">
+    <div className="mb-5 lg:pl-5 lg:pr-5  w-full h-full max-w-lg">
+      <div className="flex flex-wrap justify-center  m-4">
         {new Array(26).fill(0).map((_, index) => (
-          <div key={index} className="relative">
-            <h1 className="absolute left-8 top-7 text-2xl text-white">
+          <button
+            disabled={isLoading}
+            key={index}
+            onClick={() => setLetter(ALPHABETS[index])}
+            className={`relative  flex justify-center items-center `}
+          >
+            <h1
+              className=" absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+ lg:text-2xl md:text-base text-white "
+            >
               {ALPHABETS[index]}
             </h1>
 
-            {/* <img src="assets/hammer.svg" alt={`hammer${index}`} /> */}
-            <HammerHeadIcon letter={ALPHABETS[index]} handleClick={setLetter} />
-          </div>
+            <div className=" grid place-items-center">
+              <HammerHeadIcon />
+            </div>
+          </button>
         ))}
       </div>
       <div className="flex justify-evenly">
+        {!isShown && (
+          <Popper
+            {...{ isShown, setIsShown }}
+            text="Click on any block to reveal the hidden letter"
+            open={openHintPopper}
+            onClose={onClose}
+          />
+        )}
         <button
-          onClick={() => setShowHint(true)}
+          onClick={() => {
+            setShowHint(true);
+            setOpenHintPopper(true);
+          }}
           disabled={isHintDisabled}
-          className="mr-5 ml-5 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+          className={`${
+            isHintDisabled && "cursor-not-allowed"
+          } bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-4 rounded inline-flex items-center`}
         >
-          <img className="pr-2 pl-2" src="assets/help.png" alt="" />
+          <img className="pr-2 w-10" src="assets/help.png" alt="" />
           <span>Hint</span>
         </button>
         <button
           onClick={handleRestart}
-          className="mr-5 ml-5 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+          className=" bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
         >
-          <img className="pr-2 pl-2" src="assets/restart.png" alt="" />
+          <img className="pr-2 w-10 " src="assets/restart.png" alt="" />
           <span>restart</span>
         </button>
       </div>
@@ -54,4 +86,4 @@ function Keyboard({
   );
 }
 
-export default Keyboard
+export default Keyboard;

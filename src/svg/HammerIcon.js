@@ -1,3 +1,5 @@
+import useWindowSize from "../hooks/useWindowSize";
+
 export const HammerIcon = () => {
   return (
     <svg
@@ -162,13 +164,13 @@ export const HammerIcon = () => {
     </svg>
   );
 };
-export const HammerHeadIcon = ({letter,handleClick}) => {
+export const HammerHeadIcon = () => {
+
   return (
-    <button onClick={()=>handleClick(letter)} className="cursor-pointer">
+    <div >
       <svg
-        width="114"
-        height="112"
-        viewBox="0 0 114 112"
+        className="w-10 h-10 sm:w-20 sm:h-20 "
+        viewBox="0 0 100 112"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -262,6 +264,6 @@ export const HammerHeadIcon = ({letter,handleClick}) => {
           </filter>
         </defs>
       </svg>
-    </button>
+    </div>
   );
 };

@@ -1,13 +1,17 @@
+import { CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import { useQuery, useQueryClient } from "react-query";
 import shortid from "shortid";
 import wordApi from "../api/wordApi";
 import useWindowSize from "../hooks/useWindowSize";
+import { DeadMan } from "../svg/ManSvg";
+import getMaxHints from "../utils/getMaxHints";
 import { validateUserInputLetter } from "../utils/validation";
 import Keyboard from "./Keyboard";
 import Letter from "./Letter";
 import Man from "./Man";
+import Popper from "./Popper";
 export default function GuessWord() {
   const { width, height } = useWindowSize();
 
@@ -32,15 +36,14 @@ export default function GuessWord() {
     }
   }, [wordArray]);
 
-  const [hiddenLetters, setHiddenLetters] = useState([]);
-  const [visibleLetters, setVisibleLetters] = useState([]);
-  const [attemptNumber, setAttemptNumber] = useState(1);
+  const [attemptNumber, setAttemptNumber] = useState(0);
   const [hintNumber, setHintNumber] = useState(0);
   const [letters, setLetters] = useState([]);
   const [isPlayerWon, setPlayerWon] = useState(false);
-  const [isPlayerLost,setPlayerLost] = useState(false)
+  const [isPlayerLost, setPlayerLost] = useState(false);
   const [userInput, setUserInput] = useState("");
   const [showHint, setShowHint] = useState(false);
+
   const generateLetters = (word) => {
     let array = word.split("").map((letter) => {
       return {
@@ -55,14 +58,15 @@ export default function GuessWord() {
   };
 
   const checkPlayerWon = () => {
-    let status = letters.every(({ letter, isVisible }) =>{return isVisible;});
-    if(letters.length ===0 || isPlayerLost) status=false
-setPlayerWon(status)
+    let status = letters.every(({ letter, isVisible }) => {
+      return isVisible;
+    });
+    if (letters.length === 0 || isPlayerLost) status = false;
+    setPlayerWon(status);
   };
 
   const checkLetter = (letter) => {
     if (validateUserInputLetter(letter)) {
-      console.log("checking letter");
       let updatedLetters = [];
       let isLetterPresent = false;
       letters.forEach((currentLetter) => {
@@ -79,7 +83,7 @@ setPlayerWon(status)
           });
         }
       });
-      console.log("isLetterPresent", isLetterPresent);
+
       if (!isLetterPresent) {
         setAttemptNumber((attemptNumber) => attemptNumber + 1);
       }
@@ -115,9 +119,7 @@ setPlayerWon(status)
   };
 
   const handelLetterClick = ({ letter, isVisible, id }) => {
-    console.log("showHint", showHint);
     if (!showHint) return;
-    console.log("letter", letter, isVisible);
     let updatedLetters = [];
     letters.forEach((currentLetter) => {
       if (currentLetter.id === id) {
@@ -138,7 +140,7 @@ setPlayerWon(status)
 
   const handleRestart = () => {
     refetch();
-    setAttemptNumber(1);
+    setAttemptNumber(0);
     setHintNumber(0);
     setLetters([]);
     setPlayerWon(false);
@@ -159,19 +161,14 @@ setPlayerWon(status)
   };
 
   useEffect(() => {
-    if (attemptNumber > 5) {
+    if (attemptNumber >= 5) {
       handleLost();
-      setPlayerLost(true)
+      setPlayerLost(true);
     }
   }, [attemptNumber]);
 
-
   useEffect(() => {
     checkPlayerWon();
-    console.log("isPlayerWon",isPlayerWon)
-    if(isPlayerWon === true){
-      setAttemptNumber(1)
-    }
   }, [
     setHintNumber,
     hintNumber,
@@ -185,29 +182,73 @@ setPlayerWon(status)
     generateLetters(word);
   }, [word]);
 
-  console.log("word", word,isPlayerWon);
+  console.log("word", word);
   return (
     <div>
       {/* show confetti when player guess the word correctly */}
-      {isPlayerWon && <Confetti width={width} height={height} />}
-      {/* <Warning/> */}
+      {isPlayerWon && (
+        <>
+          <Confetti width={width} height={height} />
+          <Popper
+            text={"Congratulations you won the game"}
+            open={isPlayerWon}
+            onClose={handleRestart}
+            children={
+              <img
+                className="w-5 h-5 "
+                src="assets/confetti.png"
+                alt="confetti"
+              ></img>
+            }
+          ></Popper>
+        </>
+      )}
+      {/* player lost */}
+      <Popper
+        text={"Better luck next time"}
+        onClose={handleRestart}
+        open={isPlayerLost}
+      ></Popper>
       <div className="con">
-        <div className="flex flex-col justify-items-center items-center">
-          <Man attemptNumber={attemptNumber} />
-          <div
-            className={`${isPlayerLost && "drop"}`}
-            style={{ display: "flex" }}
-          >
-            {letters.map((letter, index) => (
-              <Letter
-                key={letter.id}
-                {...letter}
-                handelLetterClick={handelLetterClick}
-              />
-            ))}
-          </div>
+        <div className="flex flex-col justify-items-center items-center ml-3 mr-4 ">
+          {attemptNumber === 5 ? (
+            <DeadMan />
+          ) : (
+            <Man attemptNumber={attemptNumber} />
+          )}
+
+          {isLoading ? (
+            <div className="m-10">
+              <CircularProgress />
+            </div>
+          ) : (
+            <>
+              <div
+                className={`flex flex-wrap justify-center items-center ${
+                  isPlayerLost && "drop"
+                }`}
+              >
+                {letters.map((letter, index) => (
+                  <Letter
+                    key={letter.id}
+                    {...letter}
+                    handelLetterClick={handelLetterClick}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
         <div>
+          <div className="flex flex-col justify-evenly mt-5 items-center">
+            <h1 className="text-white font-bold lg:text-3xl text-xl">
+              Number of hints remaining : {getMaxHints(word) - hintNumber}
+            </h1>
+            <h1 className="text-white font-bold  lg:text-3xl text-xl">
+              Number of attempts remaining : {5 - attemptNumber}
+            </h1>
+          </div>
+
           <Keyboard
             {...{
               setUserInput,
@@ -217,6 +258,8 @@ setPlayerWon(status)
               setShowHint,
               hintNumber,
               handleRestart,
+              word,
+              isLoading,
             }}
           />
         </div>
