@@ -5,7 +5,7 @@ If you are stuck use hint to select block to reveal letter
 
 
 # Click on this link to play the game
-[https://hangmangame-cash.vercel.app/](https://hangmangame-cash.vercel.app/)
+[link](https://hangmangame-cash.vercel.app/)
 
 # demo video
-![demo](./demo.webm)
+ /home/swapnil/Desktop/Traning/hangman_game/hangman/demo.webm
